@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setNextButtonEnabled() {
-        btn_next!!.isEnabled = ipLength >= 0 && portLength >= 0
+        btn_next!!.isEnabled = ipLength > 0 && portLength > 0
     }
 
     companion object {

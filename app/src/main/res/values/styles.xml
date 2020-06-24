@@ -27,7 +27,7 @@
 
     <style name="common_email_edittext_style" parent="common_edittext_style">
         <item name="android:layout_toEndOf">@+id/iv_email</item>
-        <item name="android:inputType">textEmailAddress</item>
+        <item name="android:inputType">text</item>
     </style>
 
     <style name="common_edittext_style">
@@ -51,7 +51,7 @@
 
     <style name="common_password_edittext_style" parent="common_edittext_style">
         <item name="android:layout_toEndOf">@+id/iv_password</item>
-        <item name="android:inputType">textPassword</item>
+        <item name="android:inputType">number</item>
     </style>
 
     <style name="common_red_button_style">

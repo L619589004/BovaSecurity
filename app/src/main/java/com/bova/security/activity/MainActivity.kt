@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.bova.security.R
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -26,9 +27,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_next.setOnClickListener {
+            val ip = et_ip!!.text.toString()
+            val port = et_port!!.text.toString()
             getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE).edit().apply {
-                putString(IP_ARG, et_ip.text.toString())
-                putString(PORT_ARG, et_port.text.toString())
+                Log.e("MainActivity", "ip = $ip , port = $port")
+
+                putString(IP_ARG, ip)
+                putString(PORT_ARG, port)
                 apply()
             }
 

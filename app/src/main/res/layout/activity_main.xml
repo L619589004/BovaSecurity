@@ -42,8 +42,7 @@
             <com.bova.security.uic.ClearableEditText
                 android:id="@+id/et_port"
                 style="@style/common_password_edittext_style"
-                android:hint="请输入PORT"
-                android:inputType="number"/>
+                android:hint="请输入PORT" />
 
         </RelativeLayout>
 

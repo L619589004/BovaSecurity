@@ -1,5 +1,6 @@
 package com.bova.security
 
+import com.bova.security.util.ByteUtil
 import java.io.File
 import java.io.OutputStream
 import java.lang.Exception
@@ -34,7 +35,8 @@ fun main(args: Array<String>) {
             try {
 
                 val fileBytes = fileArray[index].inputStream().readBytes()
-                val bytes = ByteBuffer.allocate(4).putInt(fileBytes.size).array()
+//                val bytes = ByteBuffer.allocate(4).putInt(fileBytes.size).array()
+                val bytes = ByteUtil.fromUnsignedInt(fileBytes.size.toLong())
 
                 val combineBytes = byteArrayOf(*bytes, *fileBytes)
 

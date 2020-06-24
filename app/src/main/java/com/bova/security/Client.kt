@@ -2,6 +2,7 @@ package com.bova.security
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.bova.security.util.ByteUtil
 import java.io.ByteArrayOutputStream
 import java.net.ConnectException
 import java.net.Socket
@@ -37,24 +38,27 @@ class Client(address: String, port: Int, callback: ImageCallback) {
 
         connection?.let { socket ->
             while (socket.isConnected) {
-                var imgSize = 0
+                var imgSize = 0L
                 socket.getInputStream().use {
                     var data = it.read()
                     while (data != -1) {
                         mByteArrayOutputStream.write(data)
                         if (mByteArrayOutputStream.size() == 4) {
                             //文件大小解析
-                            imgSize = ByteBuffer.wrap(mByteArrayOutputStream.toByteArray()).int
+//                            imgSize = ByteBuffer.wrap(mByteArrayOutputStream.toByteArray()).int
+                            imgSize = ByteUtil.toUnsignedInt(mByteArrayOutputStream.toByteArray())
                             println("image size:$imgSize")
                         }
-                        if (imgSize != 0 && mByteArrayOutputStream.size() == imgSize + 4) {
+                        if (imgSize != 0L && mByteArrayOutputStream.size()
+                                .toLong() == imgSize + 4
+                        ) {
                             //达到文件大小时开始解析
                             println(mByteArrayOutputStream.size())
                             callback.onImageComing(
                                 BitmapFactory.decodeByteArray(
                                     mByteArrayOutputStream.toByteArray(),
                                     4,
-                                    imgSize
+                                    imgSize.toInt()
                                 )
                             )
                             mByteArrayOutputStream.reset()

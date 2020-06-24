@@ -3,4 +3,12 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="common_bg_color">#F2F2F2</color>
+    <color name="data_field_color_black">#171717</color>
+    <color name="data_field_color_gray">#999999</color>
+    <color name="new_red">#FF3C1F</color>
+    <color name="color_primary_button_pressed">#FE624B</color>
+    <color name="common_button_disable_color">#cccccc</color>
+    <color name="white">#ffffff</color>
 </resources>

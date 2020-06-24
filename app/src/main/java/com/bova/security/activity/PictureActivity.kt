@@ -1,36 +1,34 @@
 package com.bova.security.activity
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.bova.security.Client
+import com.bova.security.ImageCallback
 import com.bova.security.R
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_picture.*
-import java.util.*
+import kotlin.concurrent.thread
 
 
 class PictureActivity : AppCompatActivity() {
-    private var timer = Timer()
+    private lateinit var client: Client
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picture)
 
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                runOnUiThread {
-                    Log.e("PictureActivity", "11111")
-                    Picasso.get()
-                        .load(PICTURE_URLS[(0..2).random()])
-                        .into(pic)
+        thread {
+            client = Client("10.0.0.116", 8888, object : ImageCallback {
+                override fun onImageComing(image: Bitmap) {
+                    Log.e("image", "iamge")
+                    runOnUiThread {
+                        pic.setImageBitmap(image)
+                    }
                 }
-            }
-        }, 1000, 2000)
-    }
+            })
+        }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        timer.cancel()
     }
 
     companion object {

@@ -12,11 +12,11 @@ import java.util.*
 fun main(args: Array<String>) {
     val server = ServerSocket(8888)
     val fileArray = arrayListOf(
-        File("/Users/Srun/Desktop/Cyuanban-LoveStory1.png"),
-        File("/Users/Srun/Desktop/Cyuanban-LoveStory2.png"),
-        File("/Users/Srun/Desktop/Cyuanban-LoveStory3.png"),
-        File("/Users/Srun/Desktop/Cyuanban-LoveStory4.png"),
-        File("/Users/Srun/Desktop/Cyuanban-LoveStory5.png")
+        File("D:\\测试图片\\Jay1.jpg"),
+        File("D:\\测试图片\\Jay2.jpg"),
+        File("D:\\测试图片\\Jay3.jpg"),
+        File("D:\\测试图片\\Jay4.jpg"),
+        File("D:\\测试图片\\Jay5.jpg")
     )
     var index = 0
 

@@ -3,6 +3,7 @@ package com.bova.security
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import java.io.ByteArrayOutputStream
+import java.net.ConnectException
 import java.net.Socket
 import java.nio.ByteBuffer
 
@@ -15,42 +16,53 @@ fun main(args: Array<String>) {
         override fun onImageComing(image: Bitmap) {
             print(image.byteCount)
         }
+
+        override fun onSocketConnectError() {
+
+        }
     })
 }
 
 class Client(address: String, port: Int, callback: ImageCallback) {
-    private val connection: Socket = Socket(address, port)
+    private val connection: Socket? = try {
+        Socket(address, port)
+    } catch (e: ConnectException) {
+        callback.onSocketConnectError()
+        null
+    }
     private val mByteArrayOutputStream: ByteArrayOutputStream = ByteArrayOutputStream()
 
     init {
         println("Connected to server at $address on port $port")
 
-        while (connection.isConnected) {
-            var imgSize = 0
-            connection.getInputStream().use {
-                var data = it.read()
-                while (data != -1) {
-                    mByteArrayOutputStream.write(data)
-                    if (mByteArrayOutputStream.size() == 4) {
-                        //文件大小解析
-                        imgSize = ByteBuffer.wrap(mByteArrayOutputStream.toByteArray()).int
-                        println("image size:$imgSize")
-                    }
-                    if (imgSize != 0 && mByteArrayOutputStream.size() == imgSize + 4) {
-                        //达到文件大小时开始解析
-                        println(mByteArrayOutputStream.size())
-                        callback.onImageComing(
-                            BitmapFactory.decodeByteArray(
-                                mByteArrayOutputStream.toByteArray(),
-                                4,
-                                imgSize
+        connection?.let { socket ->
+            while (socket.isConnected) {
+                var imgSize = 0
+                socket.getInputStream().use {
+                    var data = it.read()
+                    while (data != -1) {
+                        mByteArrayOutputStream.write(data)
+                        if (mByteArrayOutputStream.size() == 4) {
+                            //文件大小解析
+                            imgSize = ByteBuffer.wrap(mByteArrayOutputStream.toByteArray()).int
+                            println("image size:$imgSize")
+                        }
+                        if (imgSize != 0 && mByteArrayOutputStream.size() == imgSize + 4) {
+                            //达到文件大小时开始解析
+                            println(mByteArrayOutputStream.size())
+                            callback.onImageComing(
+                                BitmapFactory.decodeByteArray(
+                                    mByteArrayOutputStream.toByteArray(),
+                                    4,
+                                    imgSize
+                                )
                             )
-                        )
-                        mByteArrayOutputStream.reset()
+                            mByteArrayOutputStream.reset()
+                        }
+                        data = it.read()
                     }
-                    data = it.read()
+                    print(mByteArrayOutputStream.size())
                 }
-                print(mByteArrayOutputStream.size())
             }
         }
     }
@@ -63,4 +75,6 @@ interface ImageCallback {
      * @param image 图片对象
      */
     fun onImageComing(image: Bitmap)
+
+    fun onSocketConnectError()
 }

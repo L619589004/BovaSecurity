@@ -1,13 +1,19 @@
 package com.bova.security.activity
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bova.security.Client
 import com.bova.security.ImageCallback
 import com.bova.security.R
+import com.bova.security.activity.MainActivity.Companion.IP_ARG
+import com.bova.security.activity.MainActivity.Companion.IP_CONFIG_ARG
+import com.bova.security.activity.MainActivity.Companion.PORT_ARG
 import kotlinx.android.synthetic.main.activity_picture.*
+import java.net.ConnectException
 import kotlin.concurrent.thread
 
 
@@ -18,12 +24,29 @@ class PictureActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picture)
 
+        var ip = ""
+        var port = ""
+        getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE)?.apply {
+            ip = getString(IP_ARG, "")!!
+            port = getString(PORT_ARG, "")!!
+        }
+
         thread {
-            client = Client("10.0.0.116", 8888, object : ImageCallback {
+            client = Client(ip, port.toInt(), object : ImageCallback {
                 override fun onImageComing(image: Bitmap) {
                     Log.e("image", "iamge")
                     runOnUiThread {
                         pic.setImageBitmap(image)
+                    }
+                }
+
+                override fun onSocketConnectError() {
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@PictureActivity,
+                            "Socket连接异常，请检查IP端口是否配置正确",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             })

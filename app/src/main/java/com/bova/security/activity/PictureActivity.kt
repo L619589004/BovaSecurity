@@ -1,6 +1,7 @@
 package com.bova.security.activity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -50,6 +51,11 @@ class PictureActivity : AppCompatActivity() {
                     }
                 }
             })
+        }
+
+        btn_reset.setOnClickListener {
+            getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE).edit().clear().apply()
+            finish()
         }
 
     }

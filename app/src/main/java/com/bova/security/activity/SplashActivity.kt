@@ -58,6 +58,7 @@ class SplashActivity : AppCompatActivity() {
                 if (ip.isNotEmpty() && port.isNotEmpty()) PictureActivity::class.java else MainActivity::class.java
             )
         )
+        finish()
     }
 
     @PermissionFail(requestCode = 100)

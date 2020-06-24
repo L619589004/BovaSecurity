@@ -11,8 +11,14 @@ import java.util.*
 
 fun main(args: Array<String>) {
     val server = ServerSocket(8888)
-    val file = File("/Users/Srun/Desktop/Cyuanban-LoveStory5.png")
-
+    val fileArray = arrayListOf(
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory1.png"),
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory2.png"),
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory3.png"),
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory4.png"),
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory5.png")
+    )
+    var index = 0
 
     println("Server is running on port ${server.localPort}")
 
@@ -27,7 +33,7 @@ fun main(args: Array<String>) {
             Thread.sleep(3000L)
             try {
 
-                val fileBytes = file.inputStream().readBytes()
+                val fileBytes = fileArray[index].inputStream().readBytes()
                 val bytes = ByteBuffer.allocate(4).putInt(fileBytes.size).array()
 
                 val combineBytes = byteArrayOf(*bytes, *fileBytes)
@@ -35,6 +41,7 @@ fun main(args: Array<String>) {
                 writer.write(combineBytes)
                 writer.flush()
 
+                index = if (index == 4) 0 else index + 1
             } catch (e: Exception) {
                 client.close()
                 break

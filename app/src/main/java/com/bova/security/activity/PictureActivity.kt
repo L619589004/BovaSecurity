@@ -35,7 +35,7 @@ class PictureActivity : AppCompatActivity() {
         thread {
             client = Client(ip, port.toInt(), object : ImageCallback {
                 override fun onImageComing(image: Bitmap) {
-                    Log.e("image", "iamge")
+                    Log.e("BovaSecurity", "image show time = " + System.currentTimeMillis())
                     runOnUiThread {
                         pic.setImageBitmap(image)
                     }

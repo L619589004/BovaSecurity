@@ -14,11 +14,11 @@ fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }
 fun main(args: Array<String>) {
     val server = ServerSocket(8888)
     val fileArray = arrayListOf(
-        File("D:\\测试图片\\Jay1.jpg"),
-        File("D:\\测试图片\\Jay2.jpg"),
-        File("D:\\测试图片\\Jay3.jpg"),
-        File("D:\\测试图片\\Jay4.jpg"),
-        File("D:\\测试图片\\Jay5.jpg")
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory1.png"),
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory2.png"),
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory3.png"),
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory4.png"),
+        File("/Users/Srun/Desktop/Cyuanban-LoveStory5.png")
     )
     var index = 0
 
@@ -32,10 +32,10 @@ fun main(args: Array<String>) {
         println("Client connected: ${client.inetAddress.hostAddress}")
 
         while (true) {
-            Thread.sleep(3000L)
+//            Thread.sleep(50L)
             try {
 
-                val fileBytes = fileArray[0].inputStream().readBytes()
+                val fileBytes = fileArray[index].inputStream().readBytes()
 //                val bytes = ByteBuffer.allocate(4).putInt(fileBytes.size).array()
                 val bytes = ByteUtil.fromUnsignedInt(fileBytes.size.toLong())
 

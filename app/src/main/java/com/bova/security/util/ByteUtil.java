@@ -17,4 +17,8 @@ public class ByteUtil {
 
         return buffer.getLong();
     }
+
+    public static long convertFourBytesToInt2(byte[] bytes) {
+        return (long) (bytes[3] & 0xFF) << 24 | (bytes[2] & 0xFF) << 16 | (bytes[1] & 0xFF) << 8 | (bytes[0] & 0xFF);
+    }
 }

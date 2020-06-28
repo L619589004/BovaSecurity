@@ -46,7 +46,7 @@ class Client(address: String, port: Int, callback: ImageCallback) {
                         if (mByteArrayOutputStream.size() == 4) {
                             //文件大小解析
 //                            imgSize = ByteBuffer.wrap(mByteArrayOutputStream.toByteArray()).int
-                            imgSize = ByteUtil.toUnsignedInt(mByteArrayOutputStream.toByteArray())
+                            imgSize = ByteUtil.convertFourBytesToInt2(mByteArrayOutputStream.toByteArray())
                             println("image size:$imgSize")
                         }
                         if (imgSize != 0L && mByteArrayOutputStream.size()

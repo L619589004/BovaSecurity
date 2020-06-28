@@ -9,6 +9,7 @@ import java.net.Socket
 import java.nio.ByteBuffer
 import java.util.*
 
+fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }
 
 fun main(args: Array<String>) {
     val server = ServerSocket(8888)
@@ -34,11 +35,22 @@ fun main(args: Array<String>) {
             Thread.sleep(3000L)
             try {
 
-                val fileBytes = fileArray[index].inputStream().readBytes()
+                val fileBytes = fileArray[0].inputStream().readBytes()
 //                val bytes = ByteBuffer.allocate(4).putInt(fileBytes.size).array()
                 val bytes = ByteUtil.fromUnsignedInt(fileBytes.size.toLong())
 
+                println("Server Side:")
+                println()
+                println("pre 4 bytes:")
+                println(bytes.toHexString())
+
                 val combineBytes = byteArrayOf(*bytes, *fileBytes)
+                println("pre 40 bytes:")
+                println(combineBytes.take(40).toByteArray().toHexString())
+
+                println("last 40 bytes:")
+                println(combineBytes.takeLast(40).toByteArray().toHexString())
+
 
                 writer.write(combineBytes)
                 writer.flush()

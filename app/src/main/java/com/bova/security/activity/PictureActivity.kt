@@ -1,7 +1,7 @@
 package com.bova.security.activity
 
 import android.content.Context
-import android.graphics.Bitmap
+import android.graphics.*
 import android.os.Bundle
 import android.view.SurfaceHolder
 import android.widget.Toast
@@ -13,7 +13,6 @@ import com.bova.security.activity.MainActivity.Companion.IP_ARG
 import com.bova.security.activity.MainActivity.Companion.IP_CONFIG_ARG
 import com.bova.security.activity.MainActivity.Companion.PORT_ARG
 import kotlinx.android.synthetic.main.activity_picture.*
-import java.lang.Exception
 import kotlin.concurrent.thread
 
 
@@ -59,15 +58,17 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
         thread {
             client = Client(ip, port.toInt(), object : ImageCallback {
                 override fun onImageComing(image: Bitmap) {
-                    val mCanvas = holder?.lockCanvas()
+                    //清屏
+                    val mCanvas = holder?.lockCanvas(null)
+                    mCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+                    mCanvas?.drawBitmap(image, 0f, 0f, Paint())
+                    holder?.unlockCanvasAndPost(mCanvas)
                     try {
                         mCanvas?.drawBitmap(image, 0f, 0f, null)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     } finally {
-                        mCanvas?.let {
-                            holder.unlockCanvasAndPost(it)
-                        }
+
                     }
                 }
 

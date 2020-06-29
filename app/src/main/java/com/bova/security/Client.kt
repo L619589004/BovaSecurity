@@ -53,12 +53,12 @@ class Client(address: String, port: Int, callback: ImageCallback) {
 
                         val streamSize = mByteArrayOutputStream.size()
                         if (imageSize == 0 && streamSize > 4) {
-//                            imageSize = ByteBuffer.wrap(
-//                                mByteArrayOutputStream.toByteArray().take(4).toByteArray()
-//                            ).int
-                            imageSize = ByteUtil.convertFourBytesToInt2(
+                            imageSize = ByteBuffer.wrap(
                                 mByteArrayOutputStream.toByteArray().take(4).toByteArray()
-                            ).toInt()
+                            ).int
+//                            imageSize = ByteUtil.convertFourBytesToInt2(
+//                                mByteArrayOutputStream.toByteArray().take(4).toByteArray()
+//                            ).toInt()
                         } else if (imageSize != 0 && streamSize >= imageSize + 4) {
                             callback.onImageComing(
                                 BitmapFactory.decodeByteArray(

@@ -1,6 +1,7 @@
 package com.bova.security.activity;
 
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -28,6 +29,8 @@ public class SurfaceViewTemplate extends SurfaceView{
     private void initView(SurfaceHolder.Callback callback){
         SurfaceHolder mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(callback);
+        setZOrderOnTop(true);
+        mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
         setFocusable(true);
         setKeepScreenOn(true);
         setFocusableInTouchMode(true);

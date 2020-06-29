@@ -12,7 +12,7 @@
         android:layout_margin="20dp"
         android:text="Reset"/>
 
-    <com.bova.security.uic.PinchImageView
+    <com.bova.security.activity.SurfaceViewTemplate
         android:id="@+id/pic"
         android:layout_width="match_parent"
         android:layout_height="0dp"

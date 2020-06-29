@@ -2,7 +2,6 @@ package com.bova.security
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.bova.security.util.ByteUtil
 import java.io.ByteArrayOutputStream
 import java.net.ConnectException
@@ -29,6 +28,7 @@ fun main(args: Array<String>) {
 class Client(address: String, port: Int, callback: ImageCallback) {
 
     private val mByteArrayOutputStream: ByteArrayOutputStream = ByteArrayOutputStream()
+    private val speedList = mutableListOf<Double>()
 
     init {
         println("Connected to server at $address on port $port")
@@ -41,7 +41,13 @@ class Client(address: String, port: Int, callback: ImageCallback) {
                     var read: Int
                     var imageSize = 0
 
+                    var startTime = 0L
+
                     while (inputStream.read(buffer).also { read = it } != -1) {
+                        if (startTime == 0L) {
+                            startTime = System.currentTimeMillis()
+                        }
+
                         mByteArrayOutputStream.write(buffer.copyOfRange(0, read))
 
 
@@ -63,10 +69,19 @@ class Client(address: String, port: Int, callback: ImageCallback) {
                                 .copyOfRange(imageSize + 4, streamSize)
                             mByteArrayOutputStream.reset()
                             mByteArrayOutputStream.write(tempByte)
-                            imageSize = 0
-                        }
+                            val useTime = System.currentTimeMillis() - startTime
+                            val imageSpeed = imageSize / 1024.0 / useTime * 1000
+                            speedList.add(imageSpeed)
+                            if (speedList.size > 10) {
 
-                        Log.e("image Size", imageSize.toString())
+                                println(
+                                    "average speed: ${speedList.takeLast(10).average()}kb"
+                                )
+                            }
+//                            println("image size: ${imageSize / 1024}kb" + " time: " + useTime + "ms")
+                            imageSize = 0
+                            startTime = 0L
+                        }
                     }
                 }
             }

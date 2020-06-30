@@ -59,7 +59,6 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
         thread {
             client = Client(ip, port.toInt(), object : ImageCallback {
                 override fun onImageComing(image: Bitmap) {
-                    Log.e("PictureActivity","image")
                     //清屏
                     val mCanvas = holder?.lockCanvas(null)
                     mCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)

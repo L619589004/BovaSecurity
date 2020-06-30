@@ -3,6 +3,7 @@ package com.bova.security.activity
 import android.content.Context
 import android.graphics.*
 import android.os.Bundle
+import android.util.Log
 import android.view.SurfaceHolder
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -58,6 +59,7 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
         thread {
             client = Client(ip, port.toInt(), object : ImageCallback {
                 override fun onImageComing(image: Bitmap) {
+                    Log.e("PictureActivity","image")
                     //清屏
                     val mCanvas = holder?.lockCanvas(null)
                     mCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)

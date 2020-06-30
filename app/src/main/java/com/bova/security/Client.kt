@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.bova.security.util.ByteUtil
 import java.io.ByteArrayOutputStream
-import java.net.ConnectException
-import java.net.Socket
+import java.io.IOException
+import java.net.*
 import java.nio.ByteBuffer
 
 fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }
@@ -29,67 +29,94 @@ class Client(address: String, port: Int, callback: ImageCallback) {
 
     private val mByteArrayOutputStream: ByteArrayOutputStream = ByteArrayOutputStream()
     private val speedList = mutableListOf<Double>()
+    private var socket: DatagramSocket? = null
 
     init {
         println("Connected to server at $address on port $port")
 
         try {
+            socket = DatagramSocket(port)
+
+            println("***************开始监听消息***************")
             while (true) {
-                Socket(address, port).getInputStream().use { inputStream ->
+                val data = ByteArray(1024 * 1024)
+                val packet = DatagramPacket(data, data.size)
+                socket?.receive(packet)
 
-                    val buffer = ByteArray(1024)
-                    var read: Int
-                    var imageSize = 0
+                println("data = " + data.toHexString())
 
-                    var startTime = 0L
+                callback.onImageComing(
+                    BitmapFactory.decodeByteArray(
+                        data, 0, data.size
+                    )
+                )
+            }
+        } catch (e: SocketException) {
+            e.printStackTrace()
+            callback.onSocketConnectError()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            callback.onSocketConnectError()
+        } finally {
+            socket?.close()
+        }
 
-                    while (inputStream.read(buffer).also { read = it } != -1) {
-                        if (startTime == 0L) {
-                            startTime = System.currentTimeMillis()
-                        }
-
-                        mByteArrayOutputStream.write(buffer.copyOfRange(0, read))
-
-
-                        val streamSize = mByteArrayOutputStream.size()
-                        if (imageSize == 0 && streamSize > 4) {
-                            imageSize = ByteBuffer.wrap(
-                                mByteArrayOutputStream.toByteArray().take(4).toByteArray()
-                            ).int
+//        try {
+//            while (true) {
+//                Socket(address, port).getInputStream().use { inputStream ->
+//
+//                    val buffer = ByteArray(1024)
+//                    var read: Int
+//                    var imageSize = 0
+//
+//                    var startTime = 0L
+//
+//                    while (inputStream.read(buffer).also { read = it } != -1) {
+//                        if (startTime == 0L) {
+//                            startTime = System.currentTimeMillis()
+//                        }
+//
+//                        mByteArrayOutputStream.write(buffer.copyOfRange(0, read))
+//
+//
+//                        val streamSize = mByteArrayOutputStream.size()
+//                        if (imageSize == 0 && streamSize > 4) {
+////                            imageSize = ByteBuffer.wrap(
+////                                mByteArrayOutputStream.toByteArray().take(4).toByteArray()
+////                            ).int
 //                            imageSize = ByteUtil.convertFourBytesToInt2(
 //                                mByteArrayOutputStream.toByteArray().take(4).toByteArray()
 //                            ).toInt()
-                        } else if (imageSize != 0 && streamSize >= imageSize + 4) {
-                            callback.onImageComing(
-                                BitmapFactory.decodeByteArray(
-                                    mByteArrayOutputStream.toByteArray(), 4, imageSize
-                                )
-                            )
-                            val tempByte = mByteArrayOutputStream.toByteArray()
-                                .copyOfRange(imageSize + 4, streamSize)
-                            mByteArrayOutputStream.reset()
-                            mByteArrayOutputStream.write(tempByte)
-                            val useTime = System.currentTimeMillis() - startTime
-                            val imageSpeed = imageSize / 1024.0 / useTime * 1000
-                            speedList.add(imageSpeed)
-                            if (speedList.size > 10) {
-
-                                println(
-                                    "average speed: ${speedList.takeLast(10).average()}kb"
-                                )
-                            }
-//                            println("image size: ${imageSize / 1024}kb" + " time: " + useTime + "ms")
-                            imageSize = 0
-                            startTime = 0L
-                        }
-                    }
-                }
-            }
-        } catch (e: ConnectException) {
-            callback.onSocketConnectError()
-        }
+//                        } else if (imageSize != 0 && streamSize >= imageSize + 4) {
+//                            callback.onImageComing(
+//                                BitmapFactory.decodeByteArray(
+//                                    mByteArrayOutputStream.toByteArray(), 4, imageSize
+//                                )
+//                            )
+//                            val tempByte = mByteArrayOutputStream.toByteArray()
+//                                .copyOfRange(imageSize + 4, streamSize)
+//                            mByteArrayOutputStream.reset()
+//                            mByteArrayOutputStream.write(tempByte)
+//                            val useTime = System.currentTimeMillis() - startTime
+//                            val imageSpeed = imageSize / 1024.0 / useTime * 1000
+//                            speedList.add(imageSpeed)
+//                            if (speedList.size > 10) {
+//
+//                                println(
+//                                    "average speed: ${speedList.takeLast(10).average()}kb"
+//                                )
+//                            }
+////                            println("image size: ${imageSize / 1024}kb" + " time: " + useTime + "ms")
+//                            imageSize = 0
+//                            startTime = 0L
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (e: ConnectException) {
+//            callback.onSocketConnectError()
+//        }
     }
-
 }
 
 interface ImageCallback {

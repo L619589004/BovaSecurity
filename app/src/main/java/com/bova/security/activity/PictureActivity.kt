@@ -1,10 +1,13 @@
 package com.bova.security.activity
 
+import android.app.Service
 import android.content.Context
 import android.graphics.*
 import android.os.Bundle
+import android.os.Vibrator
 import android.util.Log
 import android.view.SurfaceHolder
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bova.security.Client
@@ -23,11 +26,15 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
     var ip = ""
     var port = ""
 
+    private var isVibrationSwitchOpened = false
+    private var vibrator: Vibrator? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picture)
         pic.callback = this
 
+        vibrator = getSystemService(Service.VIBRATOR_SERVICE) as Vibrator?
 
         getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE)?.apply {
             ip = getString(IP_ARG, "")!!
@@ -39,6 +46,9 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
             finish()
         }
 
+        sw_shake.setOnCheckedChangeListener { _, isChecked ->
+            isVibrationSwitchOpened = isChecked
+        }
     }
 
     companion object {
@@ -58,7 +68,8 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
     override fun surfaceCreated(holder: SurfaceHolder?) {
         thread {
             client = Client(ip, port.toInt(), object : ImageCallback {
-                override fun onImageComing(image: Bitmap) {
+                override fun onImageComing(image: Bitmap, isNeedAlarm: Boolean) {
+                    Log.e("PictureActivity", "isNeedAlarm = $isNeedAlarm")
                     //清屏
                     val mCanvas = holder?.lockCanvas(null)
                     mCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
@@ -70,6 +81,12 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
                         e.printStackTrace()
                     } finally {
 
+                    }
+
+                    if (isVibrationSwitchOpened && isNeedAlarm) {
+                        vibrator?.apply {
+                            vibrate(500)
+                        }
                     }
                 }
 

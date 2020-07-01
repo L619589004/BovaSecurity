@@ -15,8 +15,8 @@ fun main(args: Array<String>) {
     val port = 8888
 
     val client = Client(address, port, object : ImageCallback {
-        override fun onImageComing(image: Bitmap) {
-            print(image.byteCount)
+        override fun onImageComing(image: Bitmap, isNeedAlarm: Boolean) {
+            print("isNeedAlarm = "+isNeedAlarm)
         }
 
         override fun onSocketConnectError() {
@@ -35,7 +35,7 @@ class Client(address: String, port: Int, callback: ImageCallback) {
         println("Connected to server at $address on port $port")
 
         try {
-            socket = DatagramSocket(InetSocketAddress( 8888))
+            socket = DatagramSocket(InetSocketAddress(8888))
 
             println("***************开始监听消息***************")
             while (true) {
@@ -44,9 +44,11 @@ class Client(address: String, port: Int, callback: ImageCallback) {
                 socket?.receive(packet)
 
                 callback.onImageComing(
-                    BitmapFactory.decodeByteArray(
-                        data, packet.offset, packet.length
-                    )
+                    image = BitmapFactory.decodeByteArray(
+                        data,
+                        packet.offset + 1,
+                        packet.length
+                    ), isNeedAlarm = data[0] == 0X01.toByte()
                 )
             }
         } catch (e: SocketException) {
@@ -65,9 +67,11 @@ class Client(address: String, port: Int, callback: ImageCallback) {
 interface ImageCallback {
     /**
      * 当Image到达时调用
+     *
      * @param image 图片对象
+     * @param isNeedAlarm 是否需要报警
      */
-    fun onImageComing(image: Bitmap)
+    fun onImageComing(image: Bitmap, isNeedAlarm: Boolean)
 
     fun onSocketConnectError()
 }

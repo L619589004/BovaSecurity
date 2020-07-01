@@ -1,14 +1,8 @@
 package com.bova.security
 
-import android.net.InetAddresses
-import com.bova.security.util.ByteUtil
 import java.io.File
 import java.io.IOException
-import java.io.OutputStream
-import java.lang.Exception
 import java.net.*
-import java.nio.ByteBuffer
-import java.util.*
 
 fun ByteArray.toHexString() = joinToString("") { "%02x".format(it) }
 
@@ -26,7 +20,10 @@ fun main(args: Array<String>) {
         socket = DatagramSocket()
         val serverAddress = InetSocketAddress("10.0.0.24", 8888)
         while (true) {
-            val data = fileArray[index].inputStream().readBytes()
+            val data = byteArrayOf(
+                if (index % 2 == 0) 0X01 else 0X00,
+                *fileArray[index].inputStream().readBytes()
+            )
             val packet = DatagramPacket(data, data.size, serverAddress)
             socket.send(packet)
 

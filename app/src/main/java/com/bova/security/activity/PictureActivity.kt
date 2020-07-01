@@ -85,7 +85,7 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
                     if (isVibrationSwitchOpened && isNeedAlarm) {
                         vibrator?.apply {
-                            vibrate(500)
+                            vibrate(200)
                         }
                     }
                 }

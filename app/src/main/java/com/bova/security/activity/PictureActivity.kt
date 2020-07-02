@@ -2,12 +2,16 @@ package com.bova.security.activity
 
 import android.app.Service
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
 import android.view.SurfaceHolder
-import android.widget.CompoundButton
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bova.security.Client
@@ -31,6 +35,11 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         setContentView(R.layout.activity_picture)
         pic.callback = this
 
@@ -41,14 +50,16 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
             port = getString(PORT_ARG, "")!!
         }
 
-        btn_reset.setOnClickListener {
-            getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE).edit().clear().apply()
-            finish()
-        }
+//        btn_reset.setOnClickListener {
+//            getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE).edit().clear().apply()
+//            finish()
+//        }
+//
+//        sw_shake.setOnCheckedChangeListener { _, isChecked ->
+//            isVibrationSwitchOpened = isChecked
+//        }
 
-        sw_shake.setOnCheckedChangeListener { _, isChecked ->
-            isVibrationSwitchOpened = isChecked
-        }
+
     }
 
     companion object {

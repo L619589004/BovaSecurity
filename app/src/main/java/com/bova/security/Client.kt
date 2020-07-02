@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
 
     val client = Client(address, port, object : ImageCallback {
         override fun onImageComing(image: Bitmap, isNeedAlarm: Boolean) {
-            print("isNeedAlarm = "+isNeedAlarm)
+            print("isNeedAlarm = " + isNeedAlarm)
         }
 
         override fun onSocketConnectError() {

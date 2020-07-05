@@ -5,9 +5,6 @@ import android.app.Dialog
 import android.app.Service
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Vibrator
 import android.util.Log
@@ -26,7 +23,7 @@ import kotlinx.android.synthetic.main.dialog_feature.view.*
 import kotlin.concurrent.thread
 
 
-class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
+class PictureActivity : AppCompatActivity() {
     private lateinit var client: Client
 
     var ip = ""
@@ -88,7 +85,6 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
         })
 
         pic.apply {
-            callback = this@PictureActivity
             setOnTouchListener { p0, p1 -> gestureDetector.onTouchEvent(p1) }
         }
 
@@ -134,41 +130,15 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 dialog.show()
             }
         }
-    }
 
-    companion object {
-        val PICTURE_URLS = arrayOf(
-            "https://gpsbike.oss-accelerate.aliyuncs.com/Data/Gavatar/2018/11/30/19_20181130033000-100-100.png?x-oss-process=image/resize,m_fill,h_100,w_100",
-            "https://appapi.igpsport.com:8086/Data/Gavatar/2019/08/07/135223_20190807103143-100-100.jpg",
-            "http://i.imgur.com/DvpvklR.png"
-        )
-    }
-
-    override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
-    }
-
-    override fun surfaceDestroyed(holder: SurfaceHolder?) {
-    }
-
-    override fun surfaceCreated(holder: SurfaceHolder?) {
         thread {
             client = Client(ip, port.toInt(), object : ImageCallback {
                 override fun onImageComing(image: Bitmap, isNeedAlarm: Boolean) {
                     if (isPause)
                         return
 
-                    Log.e("PictureActivity", "isNeedAlarm = $isNeedAlarm")
-                    //清屏
-                    val mCanvas = holder?.lockCanvas(null)
-                    mCanvas?.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-                    mCanvas?.drawBitmap(image, 0f, 0f, Paint())
-                    holder?.unlockCanvasAndPost(mCanvas)
-                    try {
-                        mCanvas?.drawBitmap(image, 0f, 0f, null)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    } finally {
-
+                    runOnUiThread {
+                        pic.setImageBitmap(image)
                     }
 
                     if (isVibrationSwitchOpened && isNeedAlarm) {
@@ -189,5 +159,13 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 }
             })
         }
+    }
+
+    companion object {
+        val PICTURE_URLS = arrayOf(
+            "https://gpsbike.oss-accelerate.aliyuncs.com/Data/Gavatar/2018/11/30/19_20181130033000-100-100.png?x-oss-process=image/resize,m_fill,h_100,w_100",
+            "https://appapi.igpsport.com:8086/Data/Gavatar/2019/08/07/135223_20190807103143-100-100.jpg",
+            "http://i.imgur.com/DvpvklR.png"
+        )
     }
 }

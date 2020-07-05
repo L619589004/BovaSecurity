@@ -1,5 +1,6 @@
 package com.bova.security.activity
 
+import android.app.Dialog
 import android.app.Service
 import android.content.Context
 import android.graphics.Bitmap
@@ -21,6 +22,11 @@ import com.bova.security.activity.MainActivity.Companion.IP_ARG
 import com.bova.security.activity.MainActivity.Companion.IP_CONFIG_ARG
 import com.bova.security.activity.MainActivity.Companion.PORT_ARG
 import kotlinx.android.synthetic.main.activity_picture.*
+import kotlinx.android.synthetic.main.dialog_feature.*
+import kotlinx.android.synthetic.main.dialog_feature.btn_open_gallery
+import kotlinx.android.synthetic.main.dialog_feature.btn_reset
+import kotlinx.android.synthetic.main.dialog_feature.sw_alarm
+import kotlinx.android.synthetic.main.dialog_feature.view.*
 import kotlin.concurrent.thread
 
 
@@ -50,16 +56,41 @@ class PictureActivity : AppCompatActivity(), SurfaceHolder.Callback {
             port = getString(PORT_ARG, "")!!
         }
 
-//        btn_reset.setOnClickListener {
-//            getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE).edit().clear().apply()
-//            finish()
-//        }
-//
-//        sw_shake.setOnCheckedChangeListener { _, isChecked ->
-//            isVibrationSwitchOpened = isChecked
-//        }
+        iv_feature.setOnClickListener {
+            val dialog = Dialog(this, R.style.loadingDialog)
 
+            val featureView = layoutInflater.inflate(R.layout.dialog_feature, null)
 
+            dialog.apply {
+                setContentView(featureView)
+                setCancelable(true)
+                setCanceledOnTouchOutside(true)
+            }
+
+            featureView.apply {
+                btn_open_gallery.setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                sw_alarm.apply {
+                    isChecked = isVibrationSwitchOpened
+                    setOnCheckedChangeListener { _, isChecked ->
+                        isVibrationSwitchOpened = isChecked
+                        dialog.dismiss()
+                    }
+                }
+
+                btn_reset.setOnClickListener {
+                    dialog.dismiss()
+                    getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE).edit().clear().apply()
+                    finish()
+                }
+            }
+
+            if (!dialog.isShowing) {
+                dialog.show()
+            }
+        }
     }
 
     companion object {

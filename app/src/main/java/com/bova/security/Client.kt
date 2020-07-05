@@ -35,6 +35,15 @@ class Client(address: String, port: Int, callback: ImageCallback) {
         println("Connected to server at $address on port $port")
 
         try {
+            /**
+             * send a message to device
+             */
+            socket = DatagramSocket()
+            val serverAddress = InetSocketAddress(address, 8888)
+            val sendData = "hello".toByteArray()
+            val sendPacket = DatagramPacket(sendData, sendData.size, serverAddress)
+            socket?.send(sendPacket)
+
             socket = DatagramSocket(InetSocketAddress(8888))
 
             println("***************开始监听消息***************")

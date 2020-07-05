@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
     var socket: DatagramSocket? = null
     try {
         socket = DatagramSocket()
-        val serverAddress = InetSocketAddress("10.0.0.172", 8888)
+        val serverAddress = InetSocketAddress("10.0.0.85", 8888)
         while (true) {
             val data = byteArrayOf(
                 if (index == 4) 0X01 else 0X00,

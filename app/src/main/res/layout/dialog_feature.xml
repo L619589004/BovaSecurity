@@ -2,15 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
     android:orientation="vertical">
 
     <Button
         android:id="@+id/btn_open_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_marginTop="20dp"
-        android:text="打开相册" />
+        android:text="打开相册"
+        android:textSize="20sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,20 +26,27 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="震动：" />
+            android:textSize="25sp"
+            android:text="震动："
+            android:textColor="@color/new_red"/>
 
-        <Switch
+        <com.suke.widget.SwitchButton
             android:id="@+id/sw_alarm"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:sb_checked="false"
+            app:sb_checked_color="@color/new_red"
+            app:sb_show_indicator="false"
+            tools:ignore="RelativeOverlap" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_marginTop="20dp"
-        android:text="IP/端口重置" />
+        android:text="IP/端口重置"
+        android:textSize="20sp"/>
 
 </LinearLayout>

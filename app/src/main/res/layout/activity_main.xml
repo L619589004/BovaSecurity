@@ -25,7 +25,8 @@
             <com.bova.security.uic.ClearableEditText
                 android:id="@+id/et_ip"
                 style="@style/common_email_edittext_style"
-                android:hint="请输入IP" />
+                android:hint="请输入IP"
+                android:layout_marginStart="12dp"/>
 
         </RelativeLayout>
 

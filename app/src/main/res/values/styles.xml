@@ -10,10 +10,10 @@
     <!-- 通用输入框的容器的style 带圆角-->
     <style name="common_edittext_container_style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_height">58dp</item>
         <item name="android:background">@drawable/bg_common_edittext_container</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
         <item name="android:paddingStart">20dp</item>
         <item name="android:paddingEnd">20dp</item>
     </style>

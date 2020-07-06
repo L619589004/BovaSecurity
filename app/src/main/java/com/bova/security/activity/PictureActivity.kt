@@ -181,12 +181,12 @@ class PictureActivity : AppCompatActivity() {
     }
 
     private fun jumpToGallery() {
-        val intent = Intent(
-            Intent.ACTION_PICK,
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
-        intent.type = "image/*"
-        startActivityForResult(intent, 1)
+        val packageManager = packageManager
+        val intent: Intent?
+        intent = packageManager.getLaunchIntentForPackage("com.android.gallery3d")
+        intent?.let {
+            startActivity(it)
+        }
     }
 
     override fun onResume() {

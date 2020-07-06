@@ -163,12 +163,10 @@ class PictureActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onPause() {
         super.onPause()
-        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     companion object {

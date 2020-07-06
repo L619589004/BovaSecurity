@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Vibrator
@@ -114,6 +115,7 @@ class PictureActivity : AppCompatActivity() {
             featureView.apply {
                 btn_open_gallery.setOnClickListener {
                     dialog.dismiss()
+                    jumpToGallery()
                 }
 
                 sw_alarm.apply {
@@ -176,6 +178,15 @@ class PictureActivity : AppCompatActivity() {
         val format = SimpleDateFormat("yyyyMMddHHmmss")
         val bitmapName = format.format(Date()) + "_bova" + ".JPEG"
         val isSuccess = Util.saveBitmap(applicationContext, bitmap, bitmapName)
+    }
+
+    private fun jumpToGallery() {
+        val intent = Intent(
+            Intent.ACTION_PICK,
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+        intent.type = "image/*"
+        startActivityForResult(intent, 1)
     }
 
     override fun onResume() {

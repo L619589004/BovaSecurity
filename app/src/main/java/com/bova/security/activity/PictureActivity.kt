@@ -18,8 +18,11 @@ import com.bova.security.R
 import com.bova.security.activity.MainActivity.Companion.IP_ARG
 import com.bova.security.activity.MainActivity.Companion.IP_CONFIG_ARG
 import com.bova.security.activity.MainActivity.Companion.PORT_ARG
+import com.bova.security.util.Util
 import kotlinx.android.synthetic.main.activity_picture.*
 import kotlinx.android.synthetic.main.dialog_feature.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.concurrent.thread
 
 
@@ -33,6 +36,8 @@ class PictureActivity : AppCompatActivity() {
     private var vibrator: Vibrator? = null
 
     private var isPause = false
+
+    private var lastSaveTime = 0L
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,6 +146,11 @@ class PictureActivity : AppCompatActivity() {
                         pic.setImageBitmap(image)
                     }
 
+                    if (System.currentTimeMillis() - lastSaveTime >= 3000L) {
+                        saveToGallery(image)
+                        lastSaveTime = System.currentTimeMillis()
+                    }
+
                     if (isVibrationSwitchOpened && isNeedAlarm) {
                         vibrator?.apply {
                             vibrate(200)
@@ -159,6 +169,13 @@ class PictureActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun saveToGallery(bitmap: Bitmap) {
+        val format = SimpleDateFormat("yyyyMMddHHmmss")
+        val bitmapName = format.format(Date()) + "_bova" + ".JPEG"
+        val isSuccess = Util.saveBitmap(applicationContext, bitmap, bitmapName)
     }
 
     override fun onResume() {

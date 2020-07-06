@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import com.bova.security.util.ByteUtil
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.lang.IllegalArgumentException
 import java.net.*
 import java.nio.ByteBuffer
 
@@ -66,6 +67,8 @@ class Client(address: String, port: Int, callback: ImageCallback) {
         } catch (e: IOException) {
             e.printStackTrace()
             callback.onSocketConnectError()
+        }catch (e: IllegalArgumentException) {
+            e.printStackTrace()
         } finally {
             socket?.close()
         }

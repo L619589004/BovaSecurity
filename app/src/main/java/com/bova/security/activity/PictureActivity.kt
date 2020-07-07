@@ -28,7 +28,7 @@ import kotlin.concurrent.thread
 
 
 class PictureActivity : AppCompatActivity() {
-    private lateinit var client: Client
+    private var client: Client? = null
 
     var ip = ""
     var port = ""
@@ -128,7 +128,9 @@ class PictureActivity : AppCompatActivity() {
 
                 btn_reset.setOnClickListener {
                     dialog.dismiss()
-                    getSharedPreferences(IP_CONFIG_ARG, Context.MODE_PRIVATE).edit().clear().apply()
+
+                    client?.reset()
+                    startActivity(Intent(this@PictureActivity, MainActivity::class.java))
                     finish()
                 }
             }
@@ -138,39 +140,37 @@ class PictureActivity : AppCompatActivity() {
             }
         }
 
-        thread {
-            client = Client(ip, port.toInt(), object : ImageCallback {
-                override fun onImageComing(image: Bitmap, isNeedAlarm: Boolean) {
-                    if (isPause)
-                        return
+        client = Client(ip, port.toInt(), object : ImageCallback {
+            override fun onImageComing(image: Bitmap, isNeedAlarm: Boolean) {
+                if (isPause)
+                    return
 
-                    runOnUiThread {
-                        pic.setImageBitmap(image)
-                    }
-
-                    if (System.currentTimeMillis() - lastSaveTime >= 3000L) {
-                        saveToGallery(image)
-                        lastSaveTime = System.currentTimeMillis()
-                    }
-
-                    if (isVibrationSwitchOpened && isNeedAlarm) {
-                        vibrator?.apply {
-                            vibrate(200)
-                        }
-                    }
+                runOnUiThread {
+                    pic.setImageBitmap(image)
                 }
 
-                override fun onSocketConnectError() {
-                    runOnUiThread {
-                        Toast.makeText(
-                            this@PictureActivity,
-                            "Socket连接异常，请检查IP端口是否配置正确",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                if (System.currentTimeMillis() - lastSaveTime >= 3000L) {
+                    saveToGallery(image)
+                    lastSaveTime = System.currentTimeMillis()
+                }
+
+                if (isVibrationSwitchOpened && isNeedAlarm) {
+                    vibrator?.apply {
+                        vibrate(200)
                     }
                 }
-            })
-        }
+            }
+
+            override fun onSocketConnectError() {
+                runOnUiThread {
+                    Toast.makeText(
+                        this@PictureActivity,
+                        "Socket连接异常，请检查IP端口是否配置正确",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
     }
 
     @SuppressLint("SimpleDateFormat")

@@ -64,16 +64,6 @@ object Util {
             isSuccess = false
         }
 
-        val filePath: String
-        val file1: File
-        filePath = if (Build.BRAND == "Xiaomi") { // 小米手机
-            Environment.getExternalStorageDirectory().path + "/DCIM/Camera/"
-        } else {  // Meizu 、Oppo
-            Environment.getExternalStorageDirectory().path + "/DCIM/"
-        }
-        file1 = File(filePath)
-        deleteFile(file1)
-
         // 发送广播，通知刷新图库的显示
         context.sendBroadcast(
             Intent(
@@ -82,19 +72,5 @@ object Util {
             )
         )
         return isSuccess
-    }
-
-    private fun deleteFile(file: File) {
-        if (file.isDirectory) {
-            val files = file.listFiles().filter { it.name.contains("bova") }
-            if (files.size >= 10000) {
-                for (i in 0..5000) {
-                    val f = files[i]
-                    deleteFile(f)
-                }
-            }
-        } else if (file.exists()) {
-            file.delete()
-        }
     }
 }

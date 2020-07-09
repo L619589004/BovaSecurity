@@ -6,7 +6,9 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Vibrator
 import android.util.Log
 import android.view.*
@@ -19,6 +21,7 @@ import com.bova.security.R
 import com.bova.security.activity.MainActivity.Companion.IP_ARG
 import com.bova.security.activity.MainActivity.Companion.IP_CONFIG_ARG
 import com.bova.security.activity.MainActivity.Companion.PORT_ARG
+import com.bova.security.util.BovaFileObserver
 import com.bova.security.util.Util
 import kotlinx.android.synthetic.main.activity_picture.*
 import kotlinx.android.synthetic.main.dialog_feature.view.*
@@ -40,6 +43,8 @@ class PictureActivity : AppCompatActivity() {
 
     private var lastSaveTime = 0L
 
+    private var bovaFileObserver: BovaFileObserver? = null
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +55,14 @@ class PictureActivity : AppCompatActivity() {
         )
         setContentView(R.layout.activity_picture)
 
+        bovaFileObserver = BovaFileObserver(
+            mPath = if (Build.BRAND == "Xiaomi") { // 小米手机
+                Environment.getExternalStorageDirectory().path + "/DCIM/Camera/"
+            } else {
+                Environment.getExternalStorageDirectory().path + "/DCIM/"
+            }, mContext = this
+        )
+        bovaFileObserver?.startWatching()
 
         val gestureDetector = GestureDetector(this, object : SimpleOnGestureListener() {
             /**
@@ -197,11 +210,12 @@ class PictureActivity : AppCompatActivity() {
         super.onPause()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        bovaFileObserver?.stopWatching()
+    }
+
     companion object {
-        val PICTURE_URLS = arrayOf(
-            "https://gpsbike.oss-accelerate.aliyuncs.com/Data/Gavatar/2018/11/30/19_20181130033000-100-100.png?x-oss-process=image/resize,m_fill,h_100,w_100",
-            "https://appapi.igpsport.com:8086/Data/Gavatar/2019/08/07/135223_20190807103143-100-100.jpg",
-            "http://i.imgur.com/DvpvklR.png"
-        )
+        const val TAG = "PictureActivity"
     }
 }

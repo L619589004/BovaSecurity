@@ -55,7 +55,7 @@ class SplashActivity : AppCompatActivity() {
         startActivity(
             Intent(
                 this,
-                if (ip.isNotEmpty() && port.isNotEmpty()) PictureActivity::class.java else MainActivity::class.java
+                if (ip.isNotEmpty() && port.isNotEmpty()) PictureActivity::class.java else CWPictureActivity::class.java
             )
         )
         finish()

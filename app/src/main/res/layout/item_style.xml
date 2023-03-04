@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivStyle"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/bg_anime_style" />
+
+    <TextView
+        android:id="@+id/tvStyleName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="动漫风"
+        android:textColor="@drawable/textview_color_style_choose"
+        android:textSize="13sp" />
+
+</LinearLayout>
